@@ -1,0 +1,99 @@
+services:
+  # Agent 1 - Local AI Model (Ollama)
+  agent1:
+    build:
+      context: ./src/agents/agent1
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - AGENT_ID=agent1
+      - OLLAMA_BASE_URL=http://ollama:11434
+    depends_on:
+      - ollama
+    networks:
+      - agents-network
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  # Agent 2 - External AI Model (OpenAI)
+  agent2:
+    build:
+      context: ./src/agents/agent2
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - AGENT_ID=agent2
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    networks:
+      - agents-network
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  # Orchestrator - Coordenador dos Agentes
+  orchestrator:
+    build:
+      context: ./src/orchestrator
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - AGENT1_URL=http://agent1:3001
+      - AGENT2_URL=http://agent2:3002
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - agent1
+      - agent2
+    networks:
+      - agents-network
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  # Ollama - Local AI Model Server
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - agents-network
+    restart: unless-stopped
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./src/api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - ORCHESTRATOR_URL=http://orchestrator:3000
+    depends_on:
+      - orchestrator
+    networks:
+      - agents-network
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
+
+networks:
+  agents-network:
+    driver: bridge

@@ -1,0 +1,68 @@
+{
+  "name": "multiple-agents-ia",
+  "version": "1.0.0",
+  "description": "Sistema distribuído com múltiplos agentes de Inteligência Artificial",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "start:agent1": "node src/agents/agent1/server.js",
+    "start:agent2": "node src/agents/agent2/server.js",
+    "start:orchestrator": "node src/orchestrator/server.js",
+    "build": "echo 'Building project...'",
+    "test": "jest --testTimeout=10000 --verbose",
+    "test:unit": "jest --testPathPattern=tests/api.test.js --verbose",
+    "test:integration": "./test-distributed-communication.sh",
+    "test:mcp": "./test-mcp-communication.sh",
+    "test:distributed": "jest --testPathPattern=tests/distributed-communication.test.js",
+    "test:api": "./test-api.sh",
+    "test:all": "npm run test:unit && npm run test:integration",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "benchmark": "./benchmark.sh",
+    "monitor": "./monitor.sh",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:rebuild": "docker-compose down && docker-compose build --no-cache && docker-compose up -d",
+    "logs": "docker-compose logs -f",
+    "logs:orchestrator": "docker-compose logs -f orchestrator",
+    "logs:agent1": "docker-compose logs -f agent1",
+    "logs:agent2": "docker-compose logs -f agent2"
+  },
+  "keywords": [
+    "distributed-system",
+    "artificial-intelligence",
+    "microservices",
+    "nodejs",
+    "mcp",
+    "agents"
+  ],
+  "author": "Grupo SD - UFLA",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ws": "^8.14.2",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0",
+    "openai": "^4.20.1",
+    "ollama": "^0.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "eslint": "^8.54.0",
+    "prettier": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

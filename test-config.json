@@ -1,0 +1,94 @@
+{
+  "api": {
+    "base_url": "http://localhost:8080",
+    "timeout": 30000,
+    "retry_attempts": 3,
+    "retry_delay": 2000
+  },
+  "auth": {
+    "username": "admin",
+    "password": "admin123"
+  },
+  "agents": {
+    "agent1": {
+      "name": "Local Agent (Ollama)",
+      "type": "local",
+      "expected_response_time": 5000,
+      "test_message": "Hello Agent 1, this is a test message. Please respond with a brief acknowledgment."
+    },
+    "agent2": {
+      "name": "External Agent (OpenAI)",
+      "type": "external",
+      "expected_response_time": 3000,
+      "test_message": "Hello Agent 2, this is a test message. Please respond with a brief acknowledgment."
+    }
+  },
+  "orchestrator": {
+    "strategies": {
+      "parallel": {
+        "description": "Execute task on multiple agents simultaneously",
+        "test_task": "Explain what is artificial intelligence in one sentence.",
+        "expected_agents": 2,
+        "timeout": 25000
+      },
+      "sequential": {
+        "description": "Execute task on agents in sequence",
+        "test_task": "First define machine learning, then give a simple example.",
+        "expected_order": ["agent1", "agent2"],
+        "timeout": 30000
+      },
+      "consensus": {
+        "description": "Get consensus from multiple agents",
+        "test_task": "What is the best programming language for beginners?",
+        "min_consensus_score": 0.7,
+        "timeout": 30000
+      },
+      "load-balanced": {
+        "description": "Route task to least loaded agent",
+        "test_task": "Explain quantum computing in simple terms.",
+        "timeout": 20000
+      },
+      "failover": {
+        "description": "Try primary agent, fallback to secondary",
+        "test_task": "Test failover scenario",
+        "primary_agent": "agent1",
+        "fallback_agent": "agent2",
+        "timeout": 15000
+      }
+    }
+  },
+  "collaboration": {
+    "types": {
+      "discussion": {
+        "description": "Agents discuss a topic",
+        "test_problem": "What are the advantages and disadvantages of renewable energy?",
+        "agents": ["agent1", "agent2"],
+        "timeout": 30000
+      },
+      "debate": {
+        "description": "Agents debate opposing viewpoints",
+        "test_problem": "Is artificial intelligence more beneficial or harmful to society?",
+        "agents": ["agent1", "agent2"],
+        "rounds": 2,
+        "timeout": 45000
+      }
+    }
+  },
+  "performance": {
+    "concurrent_requests": {
+      "count": 5,
+      "timeout": 20000,
+      "success_threshold": 0.8
+    },
+    "load_test": {
+      "requests_per_second": 2,
+      "duration": 30,
+      "timeout": 15000
+    }
+  },
+  "monitoring": {
+    "health_check_interval": 30000,
+    "log_retention_days": 7,
+    "metrics_collection": true
+  }
+}
