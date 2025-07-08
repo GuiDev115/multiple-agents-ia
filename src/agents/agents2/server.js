@@ -237,7 +237,7 @@ function calculateConfidence(response, usage) {
   // Ajuste com base na eficiência do uso de tokens
   if (usage && usage.total_tokens > 0) {
     const tokensPerChar = usage.total_tokens / length;
-    if (tokensPerChar < 0.3) confidence += 0.1; // Efficient token usage
+    if (tokensPerChar < 0.3) confidence += 0.1;
   }
 
   return Math.min(confidence, 1.0);
